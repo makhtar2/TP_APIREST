@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "matricule": "MAT2026001",
+    "nom": "Sow",
+    "prenom": "Moussa",
+    "email": "moussa.sow@exemple.sn",
+    "filiere": "DAR",
+    "niveau": "L3"
+  },
+  {
+    "id": 2,
+    "matricule": "MAT2026002",
+    "nom": "Diop",
+    "prenom": "Fatou",
+    "email": "fatou.diop@exemple.sn",
+    "filiere": "RT",
+    "niveau": "M1"
+  }
+]
