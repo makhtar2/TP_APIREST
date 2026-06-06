@@ -1,91 +1,96 @@
-# 🚀 Guide Méthodique de Test sur Postman
+# 🚀 Guide Méthodique Postman (En 3 Parties)
 
-Ce document décrit la méthode exacte, étape par étape, pour configurer et exécuter vos tests dans l'interface de Postman.
+Ce document calque exactement votre plan de présentation. 
 Votre serveur doit être en cours d'exécution (`node src/server.js`) sur le port 3000.
 
----
-
-## Étape 1 : Obtenir le Token d'Authentification (Login)
-*Cette étape est cruciale car elle vous donne la "clé" (le Token) pour effectuer les requêtes sécurisées.*
-
-1. **Créer une nouvelle requête** dans Postman en cliquant sur le bouton **`+`**.
-2. **Méthode HTTP** : Changez le menu déroulant (sur `GET` par défaut) pour choisir **`POST`**.
-3. **URL** : Saisissez exactement `http://localhost:3000/api/auth/login`.
-4. **Configurer le Body (Corps de la requête)** :
-   - Cliquez sur l'onglet **`Body`** (situé juste en dessous de la barre d'URL).
-   - Sélectionnez le bouton radio **`raw`**.
-   - Tout au bout de cette même ligne, cliquez sur le texte bleu `Text` (menu déroulant) et choisissez **`JSON`**.
-   - Dans la zone de texte en dessous, copiez-collez ce code :
-     ```json
-     {
-         "email": "admin@ucak.edu.sn",
-         "password": "admin"
-     }
-     ```
-5. **Envoyer** : Cliquez sur le bouton bleu **`Send`**.
-6. **Résultat attendu** : Dans la section de réponse (en bas), vous devez obtenir un **Statut `200 OK`** et un objet JSON contenant une longue chaîne de caractères appelée `token`. 
-7. **Action requise** : Sélectionnez ce token (sans les guillemets) et **copiez-le** (`Ctrl+C`). Vous en aurez besoin pour la suite.
+*(Prérequis avant l'oral : Allez discrètement générer votre Token comme expliqué dans la Partie 3, et gardez-le dans votre presse-papiers pour l'utiliser lors des deux premières parties !)*
 
 ---
 
-## Étape 2 : Tester les Sécurités et l'Ajout d'un Étudiant
+## 🟢 Partie 1 : Tester les Étudiants (CRUD)
 
-1. **Créer une nouvelle requête** (bouton **`+`**).
-2. **Méthode HTTP** : Choisissez **`POST`**.
-3. **URL** : Saisissez `http://localhost:3000/api/etudiants`.
-4. **Configurer l'Autorisation (Le Token)** :
-   - Cliquez sur l'onglet **`Authorization`** (à côté de Headers et Body).
-   - Dans le menu déroulant `Type`, choisissez **`Bearer Token`**.
-   - Dans le champ `Token` qui apparaît à droite, **collez** (`Ctrl+V`) le token que vous avez copié à l'Étape 1.
-5. **Tester la validation (Provoquer une Erreur 400)** :
-   - Allez dans l'onglet **`Body`** -> sélectionnez **`raw`** -> menu déroulant **`JSON`**.
-   - Saisissez un JSON volontairement incomplet (ex: on oublie le "nom") :
-     ```json
-     {
-         "prenom": "Aliou",
-         "email": "aliou.diop@ucak.edu.sn",
-         "filiere": "DAR",
-         "niveau": "L1"
-     }
-     ```
-   - Cliquez sur **`Send`**.
-   - **Résultat attendu** : **Statut `400 Bad Request`**. Le message d'erreur s'affiche clairement : *"Erreur : Tous les champs (nom, prenom, email, filiere, niveau) sont obligatoires"*.
-6. **Tester le succès (Création valide)** :
-   - Corrigez le JSON pour qu'il soit complet et valide :
-     ```json
-     {
-         "nom": "Diop",
-         "prenom": "Aliou",
-         "email": "aliou.diop99@ucak.edu.sn",
-         "filiere": "DAR",
-         "niveau": "L1"
-     }
-     ```
-   - Cliquez sur **`Send`**.
-   - **Résultat attendu** : **Statut `201 Created`**. Le JSON renvoyé montre que le `matricule` a bien été généré automatiquement (ex: `MAT2026005`).
-
----
-
-## Étape 3 : Tester la Lecture Publique (GET)
-
+### 1. Lire la liste publique (GET)
 1. **Créer une nouvelle requête** (bouton **`+`**).
 2. **Méthode HTTP** : Laissez sur **`GET`**.
-3. **URL** : Saisissez `http://localhost:3000/api/etudiants`.
-4. **Envoyer** : Cliquez sur **`Send`** (Il n'y a besoin ni de Token ni de Body pour cette route publique).
-5. **Résultat attendu** : **Statut `200 OK`**. Vous verrez la liste de tous les étudiants s'afficher, incluant le petit nouveau que vous venez de créer à l'Étape 2.
+3. **URL** : `http://localhost:3000/api/etudiants`.
+4. **Envoyer** : Cliquez sur **`Send`** (Pas besoin de Token).
+5. **Résultat** : **Statut `200 OK`**. Vous affichez la liste publique.
+
+### 2. Ajouter un étudiant (POST)
+1. **Nouvelle requête** (bouton **`+`**).
+2. **Méthode HTTP** : Choisissez **`POST`**.
+3. **URL** : `http://localhost:3000/api/etudiants`.
+4. **Auth** : Onglet **`Authorization`** -> Type **`Bearer Token`** -> Collez votre Token.
+5. **Body** : Onglet **`Body`** -> **`raw`** -> Menu déroulant **`JSON`**.
+6. **Tester les sécurités (Erreur volontaire)** :
+   ```json
+   {
+       "prenom": "Aliou",
+       "email": "aliou.diop@ucak.edu.sn",
+       "filiere": "DAR",
+       "niveau": "L1"
+   }
+   ```
+7. **Envoyer** : Cliquez sur **`Send`**.
+8. **Résultat attendu** : **Statut `400 Bad Request`**. L'API vous protège et réclame les champs obligatoires (le "nom" manque).
+9. **Le Succès** : Ajoutez la ligne `"nom": "Diop",` dans votre JSON, puis cliquez sur `Send`. 
+   -> **Statut `201 Created`** avec un **matricule généré automatiquement**.
 
 ---
 
-## Étape 4 : Tester la Blacklist (Déconnexion)
+## 🔵 Partie 2 : Tester les Administrateurs (CRUD)
 
-1. **Créer une nouvelle requête** (bouton **`+`**).
+### 1. Ajouter un Admin (POST)
+1. **Nouvelle requête** (bouton **`+`**).
 2. **Méthode HTTP** : Choisissez **`POST`**.
-3. **URL** : Saisissez `http://localhost:3000/api/auth/logout`.
-4. **Configurer l'Autorisation** :
-   - Allez dans l'onglet **`Authorization`** -> Type **`Bearer Token`** et collez votre token toujours actif.
-5. **Envoyer** : Cliquez sur **`Send`** (Laissez l'onglet Body vide).
-6. **Résultat attendu** : **Statut `200 OK`**. Le message affiche *"Déconnecté avec succès"*.
-7. **La Preuve (Très important pour l'oral)** :
-   - Retournez sur l'onglet de votre requête de l'Étape 2 (Ajout d'un étudiant).
-   - Sans rien toucher, cliquez à nouveau sur le bouton **`Send`**.
-   - **Résultat attendu** : **Statut `401 Unauthorized`** avec le message *"Accès refusé. Veuillez vous connecter."*. Le serveur sait que ce Token est désormais sur la liste noire, il est devenu totalement inutilisable !
+3. **URL** : `http://localhost:3000/api/admins`.
+4. **Auth** : Onglet **`Authorization`** -> Type **`Bearer Token`** -> Collez votre Token.
+5. **Body** : Onglet **`Body`** -> **`raw`** -> Menu déroulant **`JSON`**.
+   ```json
+   {
+       "nom": "Ndiaye",
+       "prenom": "Fatou",
+       "telephone": "771234567",
+       "email": "fatou.ndiaye@ucak.edu.sn",
+       "password": "passer123"
+   }
+   ```
+6. **Envoyer** : Cliquez sur **`Send`**.
+7. **Résultat** : **Statut `201 Created`**. 
+
+### 2. Lire les Admins et voir la sécurité (GET)
+1. **Nouvelle requête** (bouton **`+`**).
+2. **Méthode HTTP** : Laissez sur **`GET`**.
+3. **URL** : `http://localhost:3000/api/admins`.
+4. **Auth** : Onglet **`Authorization`** -> Type **`Bearer Token`** -> Collez votre Token.
+5. **Envoyer** : Cliquez sur **`Send`**.
+6. **Résultat** : **Statut `200 OK`**. Faites remarquer au public que le mot de passe "passer123" de Fatou a été crypté (haché avec bcrypt) en une longue chaîne de caractères illisible !
+
+---
+
+## 🟡 Partie 3 : La Sécurité (Authentification et Token)
+
+### 1. Obtenir le Token (Login)
+*C'est ici que vous expliquez comment vous avez obtenu la fameuse "clé" utilisée dans les parties 1 et 2.*
+1. **Nouvelle requête** (bouton **`+`**).
+2. **Méthode HTTP** : Choisissez **`POST`**.
+3. **URL** : `http://localhost:3000/api/auth/login`.
+4. **Body** : Onglet **`Body`** -> **`raw`** -> Menu déroulant **`JSON`**.
+   ```json
+   {
+       "email": "admin@ucak.edu.sn",
+       "password": "admin"
+   }
+   ```
+5. **Envoyer** : Cliquez sur **`Send`**.
+6. **Résultat** : **Statut `200 OK`**. L'API vous renvoie votre fameux JWT Token. 
+
+### 2. Tester la Blacklist (Déconnexion)
+1. **Nouvelle requête** (bouton **`+`**).
+2. **Méthode HTTP** : Choisissez **`POST`**.
+3. **URL** : `http://localhost:3000/api/auth/logout`.
+4. **Auth** : Onglet **`Authorization`** -> Type **`Bearer Token`** -> Collez le Token actif.
+5. **Envoyer** : Cliquez sur **`Send`**.
+6. **Résultat** : **Statut `200 OK`** avec le message *"Déconnecté avec succès"*.
+7. **La Preuve finale** : Retournez sur l'onglet de votre requête de la **Partie 1** (Ajout d'étudiant). Sans rien modifier, cliquez directement sur **`Send`**. 
+   -> **Résultat immédiat** : **Statut `401 Unauthorized`**. Le token a été placé sur liste noire par le serveur, il est officiellement détruit !
