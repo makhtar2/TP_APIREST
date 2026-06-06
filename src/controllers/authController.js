@@ -9,6 +9,12 @@ const adminsPath = path.join(__dirname, '../data/admins.json');
 // Connexion administrateur
 exports.login = async (req, res) => {
     const { email, password } = req.body;
+    
+    // Contrôle de saisie : vérifier que les champs ne sont pas vides
+    if (!email || !password) {
+        return res.status(400).json({ message: "Erreur : L'email et le mot de passe sont obligatoires." });
+    }
+    
     const admins = await readJSON(adminsPath);
     const admin = admins.find(u => u.email === email);
 

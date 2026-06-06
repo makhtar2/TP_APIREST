@@ -22,7 +22,12 @@ exports.getEtudiantById = async (req, res) => {
 
 // Ajouter un étudiant
 exports.createEtudiant = async (req, res) => {
-    const { filiere, email } = req.body;
+    const { filiere, email, nom, prenom, niveau } = req.body;
+    
+    // Contrôle de saisie strict : champs obligatoires
+    if (!nom || !prenom || !email || !filiere || !niveau) {
+        return res.status(400).json({ message: "Erreur : Tous les champs (nom, prenom, email, filiere, niveau) sont obligatoires." });
+    }
     
     // Validation de la filière
     if (filiere && !FILIERES.includes(filiere)) {

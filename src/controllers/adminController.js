@@ -26,7 +26,12 @@ exports.createAdmin = async (req, res) => {
     const admins = await readJSON(adminsPath);
     
     // Utilisation de l'opérateur rest (...) pour extraire le mot de passe et garder le reste des données
-    const { password, email, telephone, ...rest } = req.body;
+    const { password, email, telephone, nom, prenom, ...rest } = req.body;
+
+    // Contrôle de saisie strict : aucun champ ne doit être vide
+    if (!email || !password || !telephone || !nom || !prenom) {
+        return res.status(400).json({ message: "Erreur : Tous les champs (nom, prenom, email, telephone, password) sont obligatoires." });
+    }
 
     // Vérification de l'unicité
     if (admins.some(a => a.email === email)) {
@@ -66,7 +71,10 @@ exports.updateAdmin = async (req, res) => {
         if (req.body.telephone && admins.some(a => a.telephone === req.body.telephone && a.id !== adminId)) {
             return res.status(400).json({ message: "Erreur : Ce numéro de téléphone est déjà utilisé par un autre administrateur." });
         }
-        if (req.body.password) {
+        if (req.body.password !== undefined) {
+            if (req.body.password.trim() === "") {
+                return res.status(400).json({ message: "Erreur : Le mot de passe ne peut pas être vide." });
+            }
             req.body.password = await bcrypt.hash(req.body.password, 10);
         }
         
