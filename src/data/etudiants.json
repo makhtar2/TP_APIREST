@@ -34,5 +34,14 @@
     "email": "amy.lo@ucak.edu.sn",
     "filiere": "DAR",
     "niveau": "L3"
+  },
+  {
+    "id": 5,
+    "matricule": "MAT2026005",
+    "nom": "Diop",
+    "prenom": "Aliou",
+    "email": "aliou.diop@ucak.edu.sn",
+    "filiere": "DAR",
+    "niveau": "L1"
   }
 ]

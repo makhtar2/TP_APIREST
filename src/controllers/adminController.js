@@ -46,6 +46,8 @@ exports.createAdmin = async (req, res) => {
 
     const newAdmin = {
         id: admins.length > 0 ? admins[admins.length - 1].id + 1 : 1,
+        nom,
+        prenom,
         email,
         telephone,
         ...rest,
