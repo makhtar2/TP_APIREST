@@ -1,5 +1,6 @@
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const { readJSON } = require('../utils/fileHandler');
 const { SECRET_KEY, tokenBlacklist } = require('../middleware/authMiddleware');
@@ -19,7 +20,9 @@ exports.login = async (req, res) => {
     const admin = admins.find(u => u.email === email);
 
     // Vérifie si le mot de passe est correct
-    if (admin && admin.password === password) {
+    const isPasswordValid = admin && await bcrypt.compare(password, admin.password);
+
+    if (isPasswordValid) {
         // Génère un token JWT valide 1h
         const token = jwt.sign({ id: admin.id, email: admin.email }, SECRET_KEY, { expiresIn: '1h' });
         res.json({ token });

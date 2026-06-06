@@ -1,4 +1,5 @@
 const path = require('path');
+const bcrypt = require('bcryptjs');
 
 const { readJSON, writeJSON } = require('../utils/fileHandler');
 
@@ -41,6 +42,8 @@ exports.createAdmin = async (req, res) => {
         return res.status(400).json({ message: "Erreur : Ce numéro de téléphone est déjà utilisé." });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newAdmin = {
         id: admins.length > 0 ? admins[admins.length - 1].id + 1 : 1,
         nom,
@@ -48,7 +51,7 @@ exports.createAdmin = async (req, res) => {
         email,
         telephone,
         ...rest,
-        password: password
+        password: hashedPassword
     };
 
     admins.push(newAdmin);
@@ -70,13 +73,15 @@ exports.updateAdmin = async (req, res) => {
         if (req.body.telephone && admins.some(a => a.telephone === req.body.telephone && a.id !== adminId)) {
             return res.status(400).json({ message: "Erreur : Ce numéro de téléphone est déjà utilisé par un autre administrateur." });
         }
+        let updatedData = { ...req.body };
         if (req.body.password !== undefined) {
             if (req.body.password.trim() === "") {
                 return res.status(400).json({ message: "Erreur : Le mot de passe ne peut pas être vide." });
             }
+            updatedData.password = await bcrypt.hash(req.body.password, 10);
         }
         
-        admins[index] = { ...admins[index], ...req.body, id: admins[index].id };
+        admins[index] = { ...admins[index], ...updatedData, id: admins[index].id };
         await writeJSON(adminsPath, admins);
         res.json({ message: "Admin mis à jour avec succès" });
     } else {
