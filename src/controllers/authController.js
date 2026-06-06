@@ -10,7 +10,7 @@ const adminsPath = path.join(__dirname, '../data/admins.json');
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     
-    // Contrôle de saisie : vérifier que les champs ne sont pas vides
+    // Vérifie si les champs sont remplis
     if (!email || !password) {
         return res.status(400).json({ message: "Erreur : L'email et le mot de passe sont obligatoires." });
     }
@@ -18,9 +18,9 @@ exports.login = async (req, res) => {
     const admins = await readJSON(adminsPath);
     const admin = admins.find(u => u.email === email);
 
-    // bcrypt.compare vérifie que le mot de passe en clair correspond au hash sécurisé stocké dans le JSON
+    // Vérifie si le mot de passe est correct
     if (admin && await bcrypt.compare(password, admin.password)) {
-        // Génération d'un token JWT (JSON Web Token) signé avec notre clé secrète, valide pour 1 heure
+        // Génère un token JWT valide 1h
         const token = jwt.sign({ id: admin.id, email: admin.email }, SECRET_KEY, { expiresIn: '1h' });
         res.json({ token });
     } else {
@@ -30,11 +30,11 @@ exports.login = async (req, res) => {
 
 // Déconnexion administrateur
 exports.logout = (req, res) => {
-    // Extraction du token depuis le header
+    // Récupère le token du header
     const token = req.headers['authorization']?.split(' ')[1];
     
     if (token) {
-        // Ajout du token à la blacklist
+        // Bloque le token (déconnexion)
         tokenBlacklist.add(token);
         res.json({ message: "Déconnecté avec succès" });
     } else {

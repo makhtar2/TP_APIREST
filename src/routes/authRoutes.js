@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 
-// Point d'accès pour se connecter
+// Route de connexion
 router.post('/login', authController.login);
 
-// Point d'accès pour se déconnecter
+// Route de déconnexion
 router.post('/logout', authController.logout);
 
 module.exports = router;

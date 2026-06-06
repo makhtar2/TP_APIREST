@@ -25,15 +25,15 @@ exports.getAdminById = async (req, res) => {
 exports.createAdmin = async (req, res) => {
     const admins = await readJSON(adminsPath);
     
-    // Utilisation de l'opérateur rest (...) pour extraire le mot de passe et garder le reste des données
+    // Sépare le mot de passe des autres données
     const { password, email, telephone, nom, prenom, ...rest } = req.body;
 
-    // Contrôle de saisie strict : aucun champ ne doit être vide
+    // Vérifie les champs obligatoires
     if (!email || !password || !telephone || !nom || !prenom) {
         return res.status(400).json({ message: "Erreur : Tous les champs (nom, prenom, email, telephone, password) sont obligatoires." });
     }
 
-    // Vérification de l'unicité
+    // Empêche les doublons d'email ou de téléphone
     if (admins.some(a => a.email === email)) {
         return res.status(400).json({ message: "Erreur : Cet email est déjà utilisé." });
     }
@@ -41,7 +41,7 @@ exports.createAdmin = async (req, res) => {
         return res.status(400).json({ message: "Erreur : Ce numéro de téléphone est déjà utilisé." });
     }
 
-    // Hachage du mot de passe avec un algorithme de salage (10 tours) pour une sécurité optimale
+    // Crypte le mot de passe (sécurité)
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newAdmin = {
@@ -64,7 +64,7 @@ exports.updateAdmin = async (req, res) => {
     const index = admins.findIndex(a => a.id === adminId);
 
     if (index !== -1) {
-        // Vérification de l'unicité lors de la mise à jour (en ignorant l'admin actuel)
+        // Vérifie les doublons en ignorant l'admin actuel
         if (req.body.email && admins.some(a => a.email === req.body.email && a.id !== adminId)) {
             return res.status(400).json({ message: "Erreur : Cet email est déjà utilisé par un autre administrateur." });
         }
