@@ -4,17 +4,31 @@ const { readJSON, writeJSON } = require('../utils/fileHandler');
 
 const adminsPath = path.join(__dirname, '../data/admins.json');
 
-// Lister les admins
+// Liste des administrateurs
 exports.getAllAdmins = async (req, res) => {
     res.json(await readJSON(adminsPath));
 };
 
-// Créer un admin (avec hachage du mot de passe)
+// Récupérer un administrateur par ID
+exports.getAdminById = async (req, res) => {
+    const admins = await readJSON(adminsPath);
+    const admin = admins.find(a => a.id === parseInt(req.params.id));
+    
+    if (admin) {
+        res.json(admin);
+    } else {
+        res.status(404).json({ message: "Admin non trouvé" });
+    }
+};
+
+// Création d'un administrateur
 exports.createAdmin = async (req, res) => {
     const admins = await readJSON(adminsPath);
+    
+    // Utilisation de l'opérateur rest (...) pour extraire le mot de passe et garder le reste des données
     const { password, ...rest } = req.body;
 
-    // On hache le mot de passe avant de l'enregistrer
+    // Hachage du mot de passe avec un algorithme de salage (10 tours) pour une sécurité optimale
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newAdmin = {
@@ -28,10 +42,35 @@ exports.createAdmin = async (req, res) => {
     res.status(201).json({ message: "Admin créé avec succès" });
 };
 
-// Supprimer un admin
+// Mise à jour d'un administrateur
+exports.updateAdmin = async (req, res) => {
+    const admins = await readJSON(adminsPath);
+    const index = admins.findIndex(a => a.id === parseInt(req.params.id));
+
+    if (index !== -1) {
+        if (req.body.password) {
+            req.body.password = await bcrypt.hash(req.body.password, 10);
+        }
+        
+        admins[index] = { ...admins[index], ...req.body, id: admins[index].id };
+        await writeJSON(adminsPath, admins);
+        res.json({ message: "Admin mis à jour avec succès" });
+    } else {
+        res.status(404).json({ message: "Admin non trouvé" });
+    }
+};
+
+// Suppression d'un administrateur
 exports.deleteAdmin = async (req, res) => {
     let admins = await readJSON(adminsPath);
+    const initialLength = admins.length;
+    
     admins = admins.filter(a => a.id !== parseInt(req.params.id));
-    await writeJSON(adminsPath, admins);
-    res.json({ message: "Admin supprimé" });
+    
+    if(admins.length < initialLength){
+        await writeJSON(adminsPath, admins);
+        res.json({ message: "Admin supprimé avec succès" });
+    } else {
+        res.status(404).json({ message: "Admin non trouvé" });
+    }
 };

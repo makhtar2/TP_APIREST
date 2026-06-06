@@ -6,9 +6,7 @@
     "prenom": "Makhtar",
     "email": "makhtar.wade@ucak.edu.sn",
     "filiere": "DAR",
-    "niveau": "L3",
-    "username": "makhtar",
-    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
+    "niveau": "L3"
   },
   {
     "id": 2,
@@ -17,9 +15,7 @@
     "prenom": "Mor",
     "email": "mor.faye@ucak.edu.sn",
     "filiere": "RT",
-    "niveau": "L3",
-    "username": "mor",
-    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
+    "niveau": "L3"
   },
   {
     "id": 3,
@@ -28,9 +24,7 @@
     "prenom": "Makane",
     "email": "makane.seck@ucak.edu.sn",
     "filiere": "ASR",
-    "niveau": "L3",
-    "username": "makane",
-    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
+    "niveau": "L3"
   },
   {
     "id": 4,
@@ -39,8 +33,6 @@
     "prenom": "Amy",
     "email": "amy.lo@ucak.edu.sn",
     "filiere": "DAR",
-    "niveau": "L3",
-    "username": "amy",
-    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
+    "niveau": "L3"
   }
 ]

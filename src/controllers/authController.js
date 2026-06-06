@@ -6,24 +6,31 @@ const { SECRET_KEY, tokenBlacklist } = require('../middleware/authMiddleware');
 
 const adminsPath = path.join(__dirname, '../data/admins.json');
 
+// Connexion administrateur
 exports.login = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     const admins = await readJSON(adminsPath);
-    const admin = admins.find(u => u.username === username);
+    const admin = admins.find(u => u.email === email);
 
+    // bcrypt.compare vérifie que le mot de passe en clair correspond au hash sécurisé stocké dans le JSON
     if (admin && await bcrypt.compare(password, admin.password)) {
-        const token = jwt.sign({ id: admin.id, username: admin.username }, SECRET_KEY, { expiresIn: '1h' });
+        // Génération d'un token JWT (JSON Web Token) signé avec notre clé secrète, valide pour 1 heure
+        const token = jwt.sign({ id: admin.id, email: admin.email }, SECRET_KEY, { expiresIn: '1h' });
         res.json({ token });
     } else {
         res.status(401).json({ message: "Identifiants invalides" });
     }
 };
 
+// Déconnexion administrateur
 exports.logout = (req, res) => {
+    // Extraction du token depuis le header
     const token = req.headers['authorization']?.split(' ')[1];
+    
     if (token) {
+        // Ajout du token à la blacklist
         tokenBlacklist.add(token);
-        res.json({ message: "Déconnecté" });
+        res.json({ message: "Déconnecté avec succès" });
     } else {
         res.status(400).json({ message: "Token manquant" });
     }
