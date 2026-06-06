@@ -2,19 +2,45 @@
   {
     "id": 1,
     "matricule": "MAT2026001",
-    "nom": "Sow",
-    "prenom": "Moussa",
-    "email": "moussa.sow@exemple.sn",
+    "nom": "Wade",
+    "prenom": "Makhtar",
+    "email": "makhtar.wade@ucak.edu.sn",
     "filiere": "DAR",
-    "niveau": "L3"
+    "niveau": "L3",
+    "username": "makhtar",
+    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
   },
   {
     "id": 2,
     "matricule": "MAT2026002",
-    "nom": "Diop",
-    "prenom": "Fatou",
-    "email": "fatou.diop@exemple.sn",
+    "nom": "Faye",
+    "prenom": "Mor",
+    "email": "mor.faye@ucak.edu.sn",
     "filiere": "RT",
-    "niveau": "M1"
+    "niveau": "L3",
+    "username": "mor",
+    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
+  },
+  {
+    "id": 3,
+    "matricule": "MAT2026003",
+    "nom": "Seck",
+    "prenom": "Makane",
+    "email": "makane.seck@ucak.edu.sn",
+    "filiere": "ASR",
+    "niveau": "L3",
+    "username": "makane",
+    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
+  },
+  {
+    "id": 4,
+    "matricule": "MAT2026004",
+    "nom": "Lo",
+    "prenom": "Amy",
+    "email": "amy.lo@ucak.edu.sn",
+    "filiere": "DAR",
+    "niveau": "L3",
+    "username": "amy",
+    "password": "$2b$10$Nq6cTd7sJN465FNlQmW87OTVpp9tw.bgoHqpemgCvjVMihJAKWp96"
   }
 ]

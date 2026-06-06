@@ -1,30 +1,26 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const SECRET_KEY = process.env.JWT_SECRET || 'fallback_secret';
-let tokenBlacklist = new Set(); // Stocke les tokens déconnectés
+const SECRET_KEY = process.env.JWT_SECRET || 'secret';
+const tokenBlacklist = new Set(); // Liste des tokens qui ne sont plus valides
 
+// Cette fonction s'exécute AVANT les routes protégées
 module.exports = (req, res, next) => {
-    // Récupération du token dans les en-têtes (headers)
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    // On récupère le token dans l'en-tête "Authorization" (Bearer <token>)
+    const token = req.headers['authorization']?.split(' ')[1];
 
-    if (!token) {
-        return res.status(401).json({ message: "Accès refusé. Token manquant." });
-    }
-
-    // Vérifie si l'utilisateur s'est déjà déconnecté
-    if (tokenBlacklist.has(token)) {
-        return res.status(401).json({ message: "Token révoqué. Veuillez vous reconnecter." });
+    // Si pas de token ou si le token est dans la liste noire
+    if (!token || tokenBlacklist.has(token)) {
+        return res.status(401).json({ message: "Accès refusé. Veuillez vous connecter." });
     }
 
     try {
-        // Vérifie l'authenticité du token avec la clé secrète
-        const verified = jwt.verify(token, SECRET_KEY);
-        req.user = verified;
-        next(); // Autorise l'accès à la suite
+        // On vérifie si le token est authentique avec notre clé secrète
+        const user = jwt.verify(token, SECRET_KEY);
+        req.user = user; // On stocke les infos de l'utilisateur dans la requête
+        next(); // On passe à la fonction suivante (le contrôleur)
     } catch (error) {
-        res.status(403).json({ message: "Token invalide ou expiré." });
+        res.status(403).json({ message: "Token invalide ou expiré" });
     }
 };
 

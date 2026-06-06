@@ -1,73 +1,92 @@
-# 🎓 API de Gestion des Étudiants (TP API REST)
+# API de Gestion des Etudiants - TP REST
 
-Bienvenue dans ce projet de mini-exercice mettant en œuvre une API RESTful simplifiée pour la gestion des étudiants, construite avec **Node.js** et **Express**.
+Ce projet est une application backend construite avec **Node.js** et **Express**. Elle permet de gerer une base de donnees d'etudiants et d'administrateurs via une interface RESTful. Le projet met en avant la gestion du CRUD, l'authentification par jeton (JWT) et le hachage des mots de passe.
 
-## 🚀 Fonctionnalités
-- **Lister** tous les étudiants.
-- **Rechercher** un étudiant par son identifiant unique.
-- **Ajouter** un nouvel étudiant.
-- **Modifier** les informations d'un étudiant existant.
-- **Supprimer** un étudiant.
-- **Persistance** des données via un fichier JSON local.
+## Objectifs du Projet
+- Implementer une API REST complete.
+- Securiser les acces via des Middlewares.
+- Utiliser JSON comme systeme de stockage de donnees persistant.
+- Gerer deux entites distinctes : Administrateurs et Etudiants.
 
-## 🛠️ Technologies utilisées
-- [Node.js](https://nodejs.org/)
-- [Express.js](https://expressjs.com/)
-- File System (fs) pour la gestion des données.
+## Technologies Utilisees
+- **Node.js** : Environnement d'execution.
+- **Express** : Framework web pour la gestion des routes.
+- **JWT (JsonWebToken)** : Pour l'authentification securisee.
+- **Bcryptjs** : Pour le hachage des mots de passe.
+- **Dotenv** : Pour la gestion des variables d'environnement.
+- **Morgan** : Pour le suivi (logging) des requetes HTTP.
 
-## 📂 Structure du Projet
+## Structure du Dossier
 ```text
 TP_APIREST/
 ├── src/
-│   ├── config/          # Configuration (chemins de données)
-│   ├── controllers/     # Logique métier (CRUD)
-│   ├── data/            # Fichier de stockage JSON
-│   ├── routes/          # Définition des points de terminaison
-│   └── server.js        # Point d'entrée de l'application
-├── package.json         # Dépendances et scripts
-└── README.md            # Documentation
+│   ├── config/          # Configuration (chemins de stockage)
+│   ├── controllers/     # Logique metier (CRUD Admin, Etudiant, Auth)
+│   ├── data/            # Fichiers JSON (admins.json, etudiants.json)
+│   ├── middleware/      # Verifications de securite (Auth, Roles)
+│   ├── routes/          # Definition des points d'entree de l'API
+│   └── server.js        # Point d'entree principal de l'application
+├── .env                 # Variables de configuration (Port, Secret JWT)
+├── .gitignore           # Fichiers ignores par Git
+├── package.json         # Liste des dependances
+└── README.md            # Documentation principale
 ```
 
-## ⚙️ Installation et Démarrage
+## Installation et Utilisation
 
-1. **Installer les dépendances** :
+1. **Cloner le projet**
+2. **Installer les modules** :
    ```bash
    npm install
    ```
-
-2. **Lancer le serveur** :
+3. **Configurer l'environnement** : Creer un fichier `.env` a la racine avec :
+   ```env
+   PORT=3000
+   JWT_SECRET=votre_cle_secrete
+   ```
+4. **Lancer le serveur** :
    ```bash
    node src/server.js
    ```
-   Le serveur sera accessible sur `http://localhost:3000`.
 
-## 📍 Points de terminaison (Endpoints)
+## Points de Terminaison (API Endpoints)
 
-| Méthode | Point de terminaison | Description |
+### Authentification
+| Methode | Route | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/etudiants` | Récupérer tous les étudiants |
-| `GET` | `/api/etudiants/:id` | Récupérer un étudiant par ID |
-| `POST` | `/api/etudiants` | Ajouter un étudiant |
-| `PUT` | `/api/etudiants/:id` | Mettre à jour un étudiant |
-| `DELETE` | `/api/etudiants/:id` | Supprimer un étudiant |
+| `POST` | `/api/auth/login` | Connexion et reception du Token |
+| `POST` | `/api/auth/logout` | Deconnexion (invalidation du Token) |
 
-### Exemple de corps de requête (POST/PUT) :
+### Gestion des Etudiants (`/api/etudiants`)
+*Note : La consultation est publique, mais la modification demande d'etre authentifie.*
+
+| Methode | Route | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/etudiants` | Lister tous les etudiants |
+| `GET` | `/api/etudiants/:id` | Recuperer un etudiant precis |
+| `POST` | `/api/etudiants` | Ajouter un etudiant (Admin) |
+| `PUT` | `/api/etudiants/:id` | Modifier un etudiant (Admin) |
+| `DELETE` | `/api/etudiants/:id` | Supprimer un etudiant (Admin) |
+
+### Gestion des Admins (`/api/admins`)
+*Note : Toutes ces routes sont protegees.*
+
+| Methode | Route | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/admins` | Lister les administrateurs |
+| `POST` | `/api/admins` | Creer un nouvel administrateur |
+
+## Exemple de Donnees Etudiant
 ```json
 {
-  "matricule": "MAT2026003",
-  "nom": "Fall",
-  "prenom": "Awa",
-  "email": "awa.fall@exemple.sn",
+  "matricule": "MAT2026005",
+  "nom": "Lo",
+  "prenom": "Amy",
+  "email": "amy.lo@ucak.edu.sn",
   "filiere": "DAR",
-  "niveau": "L2"
+  "niveau": "L3"
 }
 ```
 
-#### Filières autorisées :
-- **DAR** : Développement d'Applications Réparties
-- **RT** : Réseaux et Télécoms
-- **ASR** : Administration et Sécurité Réseaux
-
-
-## 📝 Auteur
-Réalisé dans le cadre d'un TP sur les API REST.
+## Auteur
+Realise dans le cadre d'un TP sur les API REST pour l'UCAK.

@@ -1,41 +1,30 @@
-const fs = require('fs').promises;
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { readJSON } = require('../utils/fileHandler');
 const { SECRET_KEY, tokenBlacklist } = require('../middleware/authMiddleware');
 
-const usersPath = path.join(__dirname, '../data/users.json');
-
-const readUsers = async () => {
-    const data = await fs.readFile(usersPath, 'utf8');
-    return JSON.parse(data);
-};
+const adminsPath = path.join(__dirname, '../data/admins.json');
 
 exports.login = async (req, res) => {
     const { username, password } = req.body;
-    const users = await readUsers();
-    
-    const user = users.find(u => u.username === username);
+    const admins = await readJSON(adminsPath);
+    const admin = admins.find(u => u.username === username);
 
-    if (user && await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
-        res.status(200).json({ 
-            message: "Connexion réussie",
-            token: token 
-        });
+    if (admin && await bcrypt.compare(password, admin.password)) {
+        const token = jwt.sign({ id: admin.id, username: admin.username }, SECRET_KEY, { expiresIn: '1h' });
+        res.json({ token });
     } else {
-        res.status(401).json({ message: "Identifiants incorrects" });
+        res.status(401).json({ message: "Identifiants invalides" });
     }
 };
 
 exports.logout = (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
+    const token = req.headers['authorization']?.split(' ')[1];
     if (token) {
         tokenBlacklist.add(token);
-        res.status(200).json({ message: "Déconnexion réussie. Token révoqué." });
+        res.json({ message: "Déconnecté" });
     } else {
-        res.status(400).json({ message: "Aucun token fourni pour la déconnexion." });
+        res.status(400).json({ message: "Token manquant" });
     }
 };

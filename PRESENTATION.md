@@ -1,4 +1,4 @@
-# 📖 Guide de Présentation : TP API REST - Gestion des Étudiants
+# Guide de Présentation : TP API REST - Gestion des Étudiants
 
 Ce document est conçu pour vous aider à présenter votre projet de manière structurée et professionnelle.
 
@@ -22,12 +22,18 @@ Pour cette version "Professionnelle", nous avons intégré des outils standards 
 - **Morgan** : Logger HTTP pour surveiller les requêtes en temps réel dans le terminal.
 - **JWT (JsonWebToken)** : Authentification moderne et sans état (stateless).
 
-## 4. Gestion Admin & Tokens
-Pour ce TP, nous avons ajouté une couche de sécurité :
-- **Authentification** : Utilisation de JSON Web Tokens (JWT).
-- **Login** : L'administrateur se connecte et reçoit un token.
-- **Protection** : Les opérations de modification (Ajouter, Modifier, Supprimer) exigent ce token dans l'en-tête de la requête.
-- **Logout** : Système de "Token Destruction" (Blacklist) qui révoque l'accès dès que l'utilisateur se déconnecte.
+## 4. Double CRUD : Gestion des Admins et des Étudiants
+Le projet gère désormais deux entités distinctes avec des structures différentes :
+
+### A. Entité Administrateur (`/api/admins`)
+- **Structure** : `id`, `nom`, `prenom`, `telephone`, `email`, `password`.
+- **Rôle** : Gérer les comptes des personnes ayant accès à la gestion du système.
+- **Sécurité** : Accès totalement protégé par Token.
+
+### B. Entité Étudiant (`/api/etudiants`)
+- **Structure** : `id`, `matricule`, `nom`, `prenom`, `email`, `filiere`, `niveau`.
+- **Rôle** : Liste des élèves inscrits dans l'établissement.
+- **Sécurité** : Lecture publique, modification/suppression réservée aux Admins.
 
 ## 5. Démonstration (Le "Live Demo")
 1.  **Récupération (GET)** : Montrer que la lecture est publique.
@@ -46,7 +52,7 @@ Ce TP m'a permis de maîtriser les bases du développement backend moderne et de
 
 ---
 
-### 💡 Conseils pour l'oral :
+### Conseils pour l'oral :
 - **Parlez de la validation** : Les professeurs aiment quand on montre que l'on contrôle ce que l'utilisateur envoie (les filières DAR/RT/ASR).
 - **Expliquez le JSON** : Mentionnez que c'est le format standard de transfert de données sur le web.
 - **Restez calme** : Si une commande échoue, lisez le message d'erreur, c'est aussi une compétence de savoir déboguer !
