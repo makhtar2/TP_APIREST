@@ -22,7 +22,7 @@ exports.getEtudiantById = async (req, res) => {
 
 // Ajouter un étudiant
 exports.createEtudiant = async (req, res) => {
-    const { filiere } = req.body;
+    const { filiere, email } = req.body;
     
     // Validation de la filière
     if (filiere && !FILIERES.includes(filiere)) {
@@ -30,12 +30,27 @@ exports.createEtudiant = async (req, res) => {
     }
 
     const etudiants = await readJSON(dataPath);
+
+    // Vérification de l'unicité de l'email
+    if (email && etudiants.some(e => e.email === email)) {
+        return res.status(400).json({ message: "Erreur : Cet email est déjà utilisé." });
+    }
+
+    // Génération automatique du matricule unique
+    const annee = new Date().getFullYear();
+    const newId = etudiants.length > 0 ? etudiants[etudiants.length - 1].id + 1 : 1;
+    // padStart(3, '0') transforme "5" en "005"
+    const matriculeGenere = `MAT${annee}${newId.toString().padStart(3, '0')}`;
     
     const newEtudiant = {
-        id: etudiants.length > 0 ? etudiants[etudiants.length - 1].id + 1 : 1,
+        id: newId,
+        matricule: matriculeGenere, // On force le matricule généré (ignore celui du req.body s'il y en a un)
         // L'opérateur spread (...) permet de décomposer et de copier automatiquement toutes les propriétés reçues (nom, prenom, etc.)
         ...req.body
     };
+    
+    // Si l'utilisateur avait envoyé un "matricule" dans req.body, il a été copié, donc on l'écrase par sécurité
+    newEtudiant.matricule = matriculeGenere;
     
     etudiants.push(newEtudiant);
     await writeJSON(dataPath, etudiants);
@@ -46,10 +61,21 @@ exports.createEtudiant = async (req, res) => {
 // Mettre à jour un étudiant
 exports.updateEtudiant = async (req, res) => {
     const etudiants = await readJSON(dataPath);
-    const index = etudiants.findIndex(e => e.id === parseInt(req.params.id));
+    const etudiantId = parseInt(req.params.id);
+    const index = etudiants.findIndex(e => e.id === etudiantId);
 
     if (index !== -1) {
-        etudiants[index] = { ...etudiants[index], ...req.body, id: etudiants[index].id };
+        // Vérification de l'unicité de l'email
+        if (req.body.email && etudiants.some(e => e.email === req.body.email && e.id !== etudiantId)) {
+            return res.status(400).json({ message: "Erreur : Cet email est déjà utilisé par un autre étudiant." });
+        }
+
+        etudiants[index] = { 
+            ...etudiants[index], 
+            ...req.body, 
+            id: etudiants[index].id,
+            matricule: etudiants[index].matricule // On s'assure que le matricule ne peut pas être modifié
+        };
         await writeJSON(dataPath, etudiants);
         res.json({ message: "Étudiant mis à jour avec succès", etudiant: etudiants[index] });
     } else {

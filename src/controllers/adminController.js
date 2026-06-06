@@ -26,13 +26,23 @@ exports.createAdmin = async (req, res) => {
     const admins = await readJSON(adminsPath);
     
     // Utilisation de l'opérateur rest (...) pour extraire le mot de passe et garder le reste des données
-    const { password, ...rest } = req.body;
+    const { password, email, telephone, ...rest } = req.body;
+
+    // Vérification de l'unicité
+    if (admins.some(a => a.email === email)) {
+        return res.status(400).json({ message: "Erreur : Cet email est déjà utilisé." });
+    }
+    if (admins.some(a => a.telephone === telephone)) {
+        return res.status(400).json({ message: "Erreur : Ce numéro de téléphone est déjà utilisé." });
+    }
 
     // Hachage du mot de passe avec un algorithme de salage (10 tours) pour une sécurité optimale
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newAdmin = {
         id: admins.length > 0 ? admins[admins.length - 1].id + 1 : 1,
+        email,
+        telephone,
         ...rest,
         password: hashedPassword
     };
@@ -45,9 +55,17 @@ exports.createAdmin = async (req, res) => {
 // Mise à jour d'un administrateur
 exports.updateAdmin = async (req, res) => {
     const admins = await readJSON(adminsPath);
-    const index = admins.findIndex(a => a.id === parseInt(req.params.id));
+    const adminId = parseInt(req.params.id);
+    const index = admins.findIndex(a => a.id === adminId);
 
     if (index !== -1) {
+        // Vérification de l'unicité lors de la mise à jour (en ignorant l'admin actuel)
+        if (req.body.email && admins.some(a => a.email === req.body.email && a.id !== adminId)) {
+            return res.status(400).json({ message: "Erreur : Cet email est déjà utilisé par un autre administrateur." });
+        }
+        if (req.body.telephone && admins.some(a => a.telephone === req.body.telephone && a.id !== adminId)) {
+            return res.status(400).json({ message: "Erreur : Ce numéro de téléphone est déjà utilisé par un autre administrateur." });
+        }
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 10);
         }
