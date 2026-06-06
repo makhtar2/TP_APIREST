@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const dataPath = require('../config/dataPath');
 
+// Fonctions utilitaires pour lire/écrire dans le fichier JSON
 const readData = async () => {
     try {
         const data = await fs.readFile(dataPath, 'utf8');
@@ -21,11 +22,15 @@ const writeData = async (data) => {
 
 const FILIERES_AUTORISEES = ['DAR', 'RT', 'ASR'];
 
+// --- LOGIQUE DU CRUD ---
+
+// 1. Récupérer tous les étudiants
 exports.getAllEtudiants = async (req, res) => {
     const etudiants = await readData();
     res.status(200).json(etudiants);
 };
 
+// 2. Récupérer un étudiant par son ID
 exports.getEtudiantById = async (req, res) => {
     const etudiants = await readData();
     const etudiant = etudiants.find(e => e.id === parseInt(req.params.id));
@@ -36,15 +41,18 @@ exports.getEtudiantById = async (req, res) => {
     }
 };
 
+// 3. Ajouter un nouvel étudiant (Admin seulement)
 exports.createEtudiant = async (req, res) => {
     const { filiere } = req.body;
+    
+    // Validation simple de la filière
     if (filiere && !FILIERES_AUTORISEES.includes(filiere)) {
         return res.status(400).json({ message: `Filière invalide. Les options sont : ${FILIERES_AUTORISEES.join(', ')}` });
     }
 
     const etudiants = await readData();
     const newEtudiant = {
-        id: etudiants.length > 0 ? etudiants[etudiants.length - 1].id + 1 : 1,
+        id: etudiants.length > 0 ? etudiants[etudiants.length - 1].id + 1 : 1, // ID auto-incrémenté
         ...req.body
     };
     etudiants.push(newEtudiant);
@@ -52,6 +60,7 @@ exports.createEtudiant = async (req, res) => {
     res.status(201).json(newEtudiant);
 };
 
+// 4. Modifier un étudiant (Admin seulement)
 exports.updateEtudiant = async (req, res) => {
     const { filiere } = req.body;
     if (filiere && !FILIERES_AUTORISEES.includes(filiere)) {
@@ -69,6 +78,7 @@ exports.updateEtudiant = async (req, res) => {
     }
 };
 
+// 5. Supprimer un étudiant (Admin seulement)
 exports.deleteEtudiant = async (req, res) => {
     let etudiants = await readData();
     const initialLength = etudiants.length;

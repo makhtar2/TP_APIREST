@@ -1,3 +1,4 @@
+// Importation des bibliothèques nécessaires
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
@@ -8,19 +9,19 @@ const authMiddleware = require('./middleware/authMiddleware');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware de logging pour voir les requêtes dans le terminal
-app.use(morgan('dev'));
-app.use(express.json());
+// Configuration des middlewares globaux
+app.use(morgan('dev')); // Affiche les logs des requêtes dans le terminal
+app.use(express.json()); // Permet au serveur de comprendre le format JSON
 
-// Routes publiques
-app.use('/api/auth', authRoutes);
+// Définition des routes de l'API
+app.use('/api/auth', authRoutes); // Routes pour la connexion/déconnexion
 
-// Routes protégées
+// Protection des routes étudiants : consultation libre (GET), modification réservée aux admins
 app.use('/api/etudiants', (req, res, next) => {
     if (req.method === 'GET') {
-        return next();
+        return next(); // Tout le monde peut voir
     }
-    authMiddleware(req, res, next);
+    authMiddleware(req, res, next); // Seuls les admins connectés peuvent modifier
 }, etudiantRoutes);
 
 app.get('/', (req, res) => {
