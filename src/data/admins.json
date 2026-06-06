@@ -6,5 +6,13 @@
     "telephone": "771234567",
     "email": "admin@ucak.edu.sn",
     "password": "admin"
+  },
+  {
+    "id": 2,
+    "nom": "Ndiaye",
+    "prenom": "Fatou",
+    "email": "fatou.ndiaye@ucak.edu.sn",
+    "telephone": "775473990",
+    "password": "passer123"
   }
 ]

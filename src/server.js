@@ -1,6 +1,8 @@
 require('dotenv').config(); // Variables d'environnement
 const express = require('express'); // Framework web
 const morgan = require('morgan'); // Logger
+const swaggerUi = require('swagger-ui-express'); // Swagger UI
+const swaggerJsdoc = require('swagger-jsdoc'); // Swagger JSDoc
 const etudiantRoutes = require('./routes/etudiantRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -8,6 +10,39 @@ const authMiddleware = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Port du serveur
+
+// --- Configuration Swagger ---
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'API Gestion Étudiants',
+            version: '1.0.0',
+            description: 'API REST pour la gestion des étudiants avec authentification JWT.',
+        },
+        servers: [
+            {
+                url: `http://localhost:${PORT}`,
+            },
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                }
+            }
+        },
+        security: [{
+            bearerAuth: []
+        }]
+    },
+    apis: ['./src/routes/*.js'], 
+};
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// -----------------------------
 
 // Middlewares globaux
 app.use(morgan('dev')); // Logs console

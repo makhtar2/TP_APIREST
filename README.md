@@ -12,9 +12,7 @@ Ce projet est une application backend construite avec **Node.js** et **Express**
 - **Node.js** : Environnement d'execution.
 - **Express** : Framework web pour la gestion des routes.
 - **JWT (JsonWebToken)** : Pour l'authentification securisee.
-- **Bcryptjs** : Pour le hachage des mots de passe.
 - **Dotenv** : Pour la gestion des variables d'environnement.
-- **Morgan** : Pour le suivi (logging) des requetes HTTP.
 
 ## Structure du Dossier
 ```text
@@ -75,6 +73,33 @@ TP_APIREST/
 | :--- | :--- | :--- |
 | `GET` | `/api/admins` | Lister les administrateurs |
 | `POST` | `/api/admins` | Creer un nouvel administrateur |
+
+## 📚 Documentation Interactive (Swagger)
+
+Ce projet inclut une documentation interactive générée avec **Swagger**. Elle permet de visualiser toutes les routes disponibles et de tester l'API directement depuis le navigateur.
+
+### Installation de Swagger (Déjà inclus)
+Si vous clonez ce projet, Swagger est déjà configuré. Les dépendances utilisées sont :
+```bash
+npm install swagger-ui-express swagger-jsdoc
+```
+
+### Comment utiliser Swagger ?
+1. Démarrez le serveur (en mode dev pour le rechargement automatique) :
+   ```bash
+   npm run dev
+   ```
+2. Ouvrez votre navigateur et accédez à l'URL suivante :
+   👉 **[http://localhost:3000/api-docs](http://localhost:3000/api-docs)**
+3. Vous verrez l'interface de Swagger avec toutes les routes documentées (`GET`, `POST`, `PUT`, `DELETE`).
+
+### Tester les routes protégées (Cadenas 🔒)
+Certaines routes nécessitent des droits d'administration (Ajout, Modification, Suppression).
+1. Allez sur la route `POST /api/auth/login` dans Swagger, cliquez sur *Try it out* et connectez-vous avec les identifiants d'un admin.
+2. Copiez le **Token JWT** renvoyé dans la réponse (sans les guillemets).
+3. Remontez en haut de la page Swagger et cliquez sur le bouton **Authorize**.
+4. Collez votre Token dans le champ *Value*, cliquez sur *Authorize*, puis *Close*.
+5. Vous pouvez maintenant tester toutes les routes protégées, Swagger attachera automatiquement votre Token !
 
 ## Exemple de Donnees Etudiant
 ```json

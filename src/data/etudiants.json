@@ -9,15 +9,6 @@
     "niveau": "L3"
   },
   {
-    "id": 2,
-    "matricule": "MAT2026002",
-    "nom": "Faye",
-    "prenom": "Mor",
-    "email": "mor.faye@ucak.edu.sn",
-    "filiere": "RT",
-    "niveau": "L3"
-  },
-  {
     "id": 3,
     "matricule": "MAT2026003",
     "nom": "Seck",
@@ -34,14 +25,5 @@
     "email": "amy.lo@ucak.edu.sn",
     "filiere": "DAR",
     "niveau": "L3"
-  },
-  {
-    "id": 5,
-    "matricule": "MAT2026005",
-    "nom": "Diop",
-    "prenom": "Aliou",
-    "email": "aliou.diop@ucak.edu.sn",
-    "filiere": "DAR",
-    "niveau": "L1"
   }
 ]
