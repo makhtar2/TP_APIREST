@@ -64,7 +64,7 @@ Votre serveur doit être en cours d'exécution (`node src/server.js`) sur le por
 3. **URL** : `http://localhost:3000/api/admins`.
 4. **Auth** : Onglet **`Authorization`** -> Type **`Bearer Token`** -> Collez votre Token.
 5. **Envoyer** : Cliquez sur **`Send`**.
-6. **Résultat** : **Statut `200 OK`**. Faites remarquer au public que le mot de passe "passer123" de Fatou a été crypté (haché avec bcrypt) en une longue chaîne de caractères illisible !
+6. **Résultat** : **Statut `200 OK`**. Vous verrez toutes les informations de Fatou.
 
 ---
 

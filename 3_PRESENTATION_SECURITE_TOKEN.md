@@ -9,7 +9,7 @@ Le point d'entrée `/api/auth/login` gère l'authentification des administrateur
 
 1. **Extraction** : Le serveur récupère l'adresse email et le mot de passe envoyés par le client.
 2. **Identification** : Le système recherche l'administrateur correspondant à l'email dans la base de données.
-3. **Vérification Cryptographique** : L'API utilise la fonction `bcrypt.compare()` pour comparer le mot de passe fourni en clair avec l'empreinte hachée stockée dans le fichier JSON.
+3. **Vérification** : L'API compare le mot de passe fourni avec celui stocké dans le fichier JSON.
 4. **Génération du Jeton** : En cas de succès, un token JWT est signé à l'aide d'une clé secrète (`SECRET_KEY`) configurée dans l'environnement. Ce token encapsule l'identité de l'utilisateur (id, email) et possède une durée de vie limitée (ex: 1 heure) pour limiter les risques de compromission.
 
 ## 3. Le Middleware d'Authentification (`authMiddleware.js`)

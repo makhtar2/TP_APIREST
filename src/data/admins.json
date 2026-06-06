@@ -5,12 +5,6 @@
     "prenom": "Super",
     "telephone": "771234567",
     "email": "admin@ucak.edu.sn",
-    "password": "$2b$10$IPECX4GLmxQYdq624stOQe8OQ9OoZKkY/kSIVLCTaBiKKLtUuFbOi"
-  },
-  {
-    "id": 2,
-    "email": "fatou.ndiaye@ucak.edu.sn",
-    "telephone": "775473990",
-    "password": "$2b$10$HmBmFlSOKwN6OU3NISRUwuaQSsQx.cwixK6aXQ9XXcNJO1Oi77bva"
+    "password": "admin"
   }
 ]
