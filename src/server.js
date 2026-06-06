@@ -13,6 +13,12 @@ const PORT = process.env.PORT || 3000; // Port du serveur
 app.use(morgan('dev')); // Logs console
 app.use(express.json()); // Parse le JSON
 
+// Sécurité : Évite le plantage si le format JSON n'est pas précisé par le client
+app.use((req, res, next) => {
+    if (!req.body) req.body = {};
+    next();
+});
+
 // Routes principales
 app.use('/api/auth', authRoutes); // Auth
 app.use('/api/admins', adminRoutes); // Admins
